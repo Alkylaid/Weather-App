@@ -3,10 +3,10 @@ const key = 'c4cb26845ca9df5bbedc8d2dc49c8b8c';
 
 
 
-async function getWeather(city) {
+async function getWeather(city, units) {
   try {
     const response = await fetch(
-        `https://api.openweathermap.org/data/2.5/weather?q=${city}&appid=${key}`
+        `https://api.openweathermap.org/data/2.5/weather?q=${city}&units=${units}&appid=${key}`
       )
         
     return await response.json();

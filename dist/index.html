@@ -4,12 +4,28 @@
     <meta charset="UTF-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <script src="https://kit.fontawesome.com/9ce8f4c7bf.js" crossorigin="anonymous"></script>
     <title>Weather App</title>
   </head>
   <body>
     <div id="container">
-        <div id="daily-weather-info"></div>
-        <div class="weather-forecast" id="weather-forecast-info"></div>
+        <div class="weather-forecast" id="daily-weather-info">
+          <div id="current-location"></div>
+          <div id="current-weather-container"><p id="current-weather-icon"></p><p id="current-description"></p></div>
+          
+          <div id="current-temperature"></div>
+          <div id="current-temp-range">
+            <p id="current-high"></p>
+            <p id="current-low"></p>
+            <p id="current-feel"></p>
+            
+          </div>
+          <div id="current-atmospheric-info"><p id="current-humidity"></p><p id="current-pressure"></p></div>
+          <div id="current-wind-info"><span class="fa-solid fa-wind"></span><p id="current-wind-speed"></p><p id ="current-wind-direction"></p></div>
+
+          
+        </div>
+      </div>
     </div>
   </body>
   <script src="main.js"></script>
