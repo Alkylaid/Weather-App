@@ -6,7 +6,8 @@ import cloudy from './imgs/cloudy.jpg';
 import rainy from './imgs/rainy.jpg';
 import snowy from './imgs/snowy.jpg';
 
-let units = "metric";
+let units = "imperial";
+let city = "Fort Worth";
 
 async function updateInfo(city, units) {
 const data = await getWeather(city, units);
@@ -63,40 +64,60 @@ function setWeatherTheme(data) {
 
 function convertWindDirection(data) {
     if (data >= "350" && data <= "360" || data >= "0" && data <= "10") {
-        return "&#8593;N";
+        return "&#8593; N";
     } else if (data > "10" && data <= "30") {
-        return "&#8599;N/NE"
+        return "&#8599; N/NE"
     } else if (data > "30" && data <= "60") {
-        return "&#8599;NE"
+        return "&#8599; NE"
     } else if (data >"60" && data <= "80") {
-        return "&#8594;E/NE"
+        return "&#8599; E/NE"
     } else if (data >"80" && data <= "110") {
-        return "&#8594;E"
+        return "&#8594; E"
     } else if (data >"110" && data <= "130") {
-        return "&#8600;E/SE"
+        return "&#8600; E/SE"
     } else if (data > "130" && data <="150") {
-        return "&#8600;SE"
+        return "&#8600; SE"
     } else if (data > "150" && data <=  "170") {
-        return "&#8595;S/SE"
+        return "&#8600; S/SE"
     } else if (data > "170" && data <= "200") {
-        return "&#8595;S"
+        return "&#8595; S"
     } else if (data > "200" && data <= "220") {
-        return "&#8601;S/SW"
+        return "&#8601; S/SW"
     } else if (data > "220" && data <= "240") {
-        return "&#8601;SW"
+        return "&#8601; SW"
     } else if (data > "240" && data <= "260") {
-        return "&#8592;W/SW"
+        return "&#8601; W/SW"
     } else if (data > "260" && data <= "290") {
-        return "&#8592;W"
+        return "&#8592; W"
     } else if (data > "290" && data <= "310") {
-        return "&#8598;W/NW"
+        return "&#8598; W/NW"
     } else if (data > "310" && data <= "330") {
-        return "&#8598;NW"
+        return "&#8598; NW"
     } else if (data > "330" && data <= "350") {
-        return "&#8593;N/NW";
+        return "&#8598; N/NW";
     }
 }
 
+function switchUnits(input) {
+    units = input;
+    updateInfo(city, units);
+}
+
+const unitOption = document.getElementById('unit-select');
+
+unitOption.addEventListener('change', () => {
+    switchUnits(unitOption.value);
+});
+
+const cityField = document.getElementById('city');
+
+cityField.addEventListener('keydown', event => {
+
+    if (event.key === "Enter") {
+        city = cityField.value;
+        updateInfo(city, units);
+    }
+});
 
 
-updateInfo("Sydney", units);
+updateInfo(city, units);
