@@ -9,6 +9,7 @@
   </head>
   <body>
     <div id="container">
+        <div class="header"><input type="text" id="city"><select name="units" id="unit-select"><option value="imperial">°F</option><option value="metric">°C</option></select></div>
         <div class="weather-forecast" id="daily-weather-info">
           <div id="current-location"></div>
           <div id="current-weather-container"><p id="current-weather-icon"></p><p id="current-description"></p></div>
@@ -22,9 +23,11 @@
           </div>
           <div id="current-atmospheric-info"><p id="current-humidity"></p><p id="current-pressure"></p></div>
           <div id="current-wind-info"><span class="fa-solid fa-wind"></span><p id="current-wind-speed"></p><p id ="current-wind-direction"></p></div>
+        
 
-          
         </div>
+        <div class="weather-forecast" id="weekly-forecast"></div>
+          
       </div>
     </div>
   </body>
