@@ -11,6 +11,10 @@ let units = 'imperial';
 let city = 'Fort Worth';
 
 async function updateInfo(city, units) {
+  try {
+    if (document.getElementById('error-message')){
+        document.getElementById('error-message').remove()}
+
   const data = await getWeather(city, units);
   console.log(data);
   document.getElementById('current-location').innerHTML = data.name;
@@ -48,6 +52,9 @@ async function updateInfo(city, units) {
   document.getElementById(
     'current-pressure'
   ).innerHTML = `Pressure: ${data.main.pressure} mB`;
+  } catch {
+    displayError();
+  }
 }
 
 function initDropdown() {
@@ -177,7 +184,17 @@ function initSearchListener() {
 
 
 function init() {
+  updateInfo(city, units);
   initSearchListener();
   initDropdown();
-  updateInfo(city, units);
+
+}
+
+function displayError() {
+    if (!document.getElementById('error-message')){
+    const header = document.querySelector('.header');
+    const p = document.createElement('p');
+    p.setAttribute('id', 'error-message');
+    p.innerHTML = "Invalid location. Please use the following format 'City' or 'City, State' or 'Zip Code'";
+    header.appendChild(p);}
 }

@@ -169,7 +169,8 @@ body {
 
 .header{
     display: flex;
-    align-items: flex-end;
+    flex-flow: row wrap;
+    width: 500px;
 }
 
 #select-wrapper{
@@ -185,16 +186,20 @@ body {
   line-height: 50px;
 }
 
-
-#unit-select{
-    border-bottom: 1px solid rgba(255, 255, 255, 0.50);
-    opacity: 0.8;
-
+#select-wrapper{
+  opacity: 0.5;
 }
 
-#unit-select:hover{
+#select-wrapper:hover, #select-wrapper:focus, #select-wrapper:active{
   opacity: 1;
 }
+
+#unit-select{
+    border-bottom: 1px solid rgba(255, 255, 255);
+}
+
+
+
 
 .drop-down{
     height: 100px;
@@ -228,4 +233,11 @@ body {
     margin-bottom: 1vw;
     display: grid;
     grid-template-columns: repeat(5, 20%);
+}
+
+#error-message{
+  color: red;
+ text-shadow: 1px 1px 0px #000;
+padding-top: -10px;
+ margin-bottom: -50px;
 }
