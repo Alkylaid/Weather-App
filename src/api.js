@@ -1,20 +1,21 @@
 export { getWeather, getWeeklyForecast };
-import { displayError, city, zipCode, state, mode, units } from './ui';
+import { displayError} from './ui';
+import { city } from './index.js';
 const key = 'c4cb26845ca9df5bbedc8d2dc49c8b8c';
 
 async function getWeather() {
   try {
     let response;
-    if (mode === "city") {
+    if (city.getMode() === "city") {
     response = await fetch(
-      `https://api.openweathermap.org/data/2.5/weather?q=${city}&units=${units}&appid=${key}`
-    );} else if (mode === "city-state") {
+      `https://api.openweathermap.org/data/2.5/weather?q=${city.getName()}&units=${city.getUnits()}&appid=${key}`
+    );} else if (city.getMode() === "city-state") {
 
      response = await fetch(
-        `https://api.openweathermap.org/data/2.5/weather?q=${city},${state}&units=${units}&appid=${key}`
+        `https://api.openweathermap.org/data/2.5/weather?q=${city.getName()},${city.getState()}&units=${city.getUnits()}&appid=${key}`
       );
-    } else if (mode === "zipcode") {
-      response = await fetch(`https://api.openweathermap.org/data/2.5/weather?zip=${zipCode}&units=${units}&appid=${key}`)
+    } else if (city.getMode() === "zipcode") {
+      response = await fetch(`https://api.openweathermap.org/data/2.5/weather?zip=${city.getZipCode()}&units=${city.getUnits()}&appid=${key}`)
     }
 
     return await response.json();
@@ -27,16 +28,16 @@ async function getWeeklyForecast() {
   try {
     let response;
 
-    if (mode === "city"){
+    if (city.getMode() === "city"){
     response = await fetch(
-      `https://api.openweathermap.org/data/2.5/forecast?q=${city}&units=${units}&appid=${key}`
-    );} else if (mode === "city-state") {
+      `https://api.openweathermap.org/data/2.5/forecast?q=${city.getName()}&units=${city.getUnits()}&appid=${key}`
+    );} else if (city.getMode() === "city-state") {
       response = await fetch(
-        `https://api.openweathermap.org/data/2.5/forecast?q=${city},${state},&us&units=${units}&appid=${key}`
+        `https://api.openweathermap.org/data/2.5/forecast?q=${city.getName()},${city.getState()},&us&units=${city.getUnits()}&appid=${key}`
       );
-    } else if (mode === "zipcode") {
+    } else if (city.getMode() === "zipcode") {
       response = await fetch(
-        `https://api.openweathermap.org/data/2.5/forecast?zip=${zipCode}&units=${units}&appid=${key}`
+        `https://api.openweathermap.org/data/2.5/forecast?zip=${city.getZipCode()}&units=${city.getUnits()}&appid=${key}`
       );
     }
     return await response.json();

@@ -1,5 +1,6 @@
-export { init, updateInfo, displayError, city, state, zipCode, mode, units };
+export { init, updateInfo, displayError};
 import { getWeather, getWeeklyForecast } from './api.js';
+import { city } from './index.js';
 import {
   addTempUnits,
   convertDate,
@@ -12,11 +13,6 @@ import cloudy from './imgs/cloudy.jpg';
 import rainy from './imgs/rainy.jpg';
 import snowy from './imgs/snowy.jpg';
 
-let units = 'imperial';
-let city = 'Los Angeles';
-let state;
-let zipCode;
-let mode = 'city';
 
 const weatherIcon = {
   Thunderstorm: 'fa-cloud-bolt',
@@ -47,27 +43,27 @@ async function updateInfo() {
     document.getElementById('current-location').innerHTML = data.name;
     document.getElementById('current-temperature').innerHTML = addTempUnits(
       Math.round(data.main.temp),
-      units
+      city.getUnits()
     );
     document.getElementById('current-description').innerHTML =
       data.weather[0].main;
     document.getElementById('current-high').innerHTML = `H: ${addTempUnits(
       Math.round(data.main.temp_max),
-      units
+      city.getUnits()
     )}&nbsp;/&nbsp;`;
     document.getElementById('current-low').innerHTML = `L: ${addTempUnits(
       Math.round(data.main.temp_min),
-      units
+      city.getUnits()
     )}`;
     document.getElementById(
       'current-feel'
     ).innerHTML = `Feels Like: ${addTempUnits(
       Math.round(data.main.feels_like),
-      units
+      city.getUnits()
     )}`;
     document.getElementById('current-wind-speed').innerHTML = `${
       data.wind.speed
-    } ${units === 'imperial' ? 'mph' : 'm/s'}`;
+    } ${city.getUnits() === 'imperial' ? 'mph' : 'm/s'}`;
     document.getElementById(
       'current-wind-direction'
     ).innerHTML = `${convertWindDirection(data.wind.deg)}`;
@@ -104,7 +100,7 @@ function initDropdown() {
   });
 
   optionOne.addEventListener('click', () => {
-    units = 'imperial';
+    city.setUnits('imperial')
     unitSelect.innerHTML = '°F';
     dropDown.style.display = 'none';
     updateInfo();
@@ -112,7 +108,7 @@ function initDropdown() {
   });
 
   optionTwo.addEventListener('click', () => {
-    units = 'metric';
+    city.setUnits('metric')
     unitSelect.innerHTML = '°C';
     dropDown.style.display = 'none';
     updateInfo();
@@ -225,7 +221,7 @@ function updateWeeklyForecast(days) {
 
     const temperature = document.createElement('div');
     temperature.classList.add('forecast-item-temperature');
-    temperature.innerHTML = addTempUnits(Math.round(day.main.temp), units);
+    temperature.innerHTML = addTempUnits(Math.round(day.main.temp), city.getUnits());
     div.appendChild(temperature);
   });
 }

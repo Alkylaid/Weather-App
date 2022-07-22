@@ -1,6 +1,6 @@
 export { addTempUnits, convertDate, parseString, convertWindDirection};
 import { format, parseISO } from 'date-fns';
-import {city, state, zipCode, mode} from './ui.js'
+import {city} from './index.js'
 
 function addTempUnits(data, units) {
   switch (units) {
@@ -23,16 +23,16 @@ function convertDate(date, formats) {
 function parseString(string) {
     const entries = string.split(',');
     if (entries.length === 2) {
-        city = entries[0];
-        state = entries[1].replace(/\s+/g, '');
-        mode = "city-state"
+        city.setName(entries[0]);
+        city.setState(`US-${entries[1].replace(/\s+/g, '')}`);
+        city.setMode("city-state") 
     } else if (entries.length === 1) {
         if (/\d/.test(entries[0])) {
-            zipCode = entries[0];
-            mode = "zipcode";
+            city.setZip(entries[0]);
+            city.setMode("zipcode");
         } else {
-            city = entries[0];
-            mode = "city";
+            city.setName(entries[0]);
+            city.setMode("city");
         }
     }
 }
