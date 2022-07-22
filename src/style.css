@@ -232,3 +232,34 @@ body {
   margin-bottom: -50px;
   font-weight: 700;
 }
+
+.weekly-forecast-item{
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-evenly;
+  height: 250px;
+  border-right:1px solid rgba(0,0,0, 0.1);
+}
+
+#weekly-forecast:last-child{
+  border: none;
+}
+
+
+.forecast-item-date{
+  font-size: 1.2rem;
+}
+
+.forecast-item-day{
+  margin-top: -20px;
+  font-size: 1.6rem;
+}
+
+.forecast-item-icon{
+  font-size: 3rem;
+}
+
+.forecast-item-temperature{
+  font-size: 2rem;
+}
