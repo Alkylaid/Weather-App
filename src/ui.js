@@ -1,6 +1,11 @@
-export { init, updateInfo, displayError };
+export { init, updateInfo, displayError, city, state, zipCode, mode, units };
 import { getWeather, getWeeklyForecast } from './api.js';
-import { addTempUnits, convertDate} from './helpers';
+import {
+  addTempUnits,
+  convertDate,
+  parseString,
+  convertWindDirection,
+} from './helpers';
 import overcast from './imgs/overcast.jpg';
 import sunny from './imgs/sunny.jpg';
 import cloudy from './imgs/cloudy.jpg';
@@ -8,15 +13,36 @@ import rainy from './imgs/rainy.jpg';
 import snowy from './imgs/snowy.jpg';
 
 let units = 'imperial';
-let city = 'Fort Worth';
+let city = 'Los Angeles';
+let state;
+let zipCode;
+let mode = 'city';
 
-async function updateInfo(city, units) {
+const weatherIcon = {
+  Thunderstorm: 'fa-cloud-bolt',
+  Drizzle: 'fa-cloud-rain',
+  Rain: 'fa-cloud-showers-heavy',
+  Snow: 'fa-snow-flake',
+  Clouds: 'fa-cloud',
+  Haze: 'fa-sun-haze',
+  Clear: 'fa-sun',
+  Mist: 'fa-cloud-fog',
+  Smoke: 'fa-smog',
+  Dust: 'fa-sun-dust',
+  Fog: 'fa-cloud-fog',
+  Sand: 'swords-laser',
+  Ash: 'fa-volcano',
+  Squall: 'fa-wind-warning',
+  Tornado: 'fa-tornado',
+};
+
+async function updateInfo() {
   try {
     if (document.getElementById('error-message')) {
       document.getElementById('error-message').remove();
     }
 
-    const data = await getWeather(city, units);
+    const data = await getWeather();
     setWeatherTheme(data.weather[0].main);
     document.getElementById('current-location').innerHTML = data.name;
     document.getElementById('current-temperature').innerHTML = addTempUnits(
@@ -81,7 +107,7 @@ function initDropdown() {
     units = 'imperial';
     unitSelect.innerHTML = '°F';
     dropDown.style.display = 'none';
-    updateInfo(city, units);
+    updateInfo();
     processWeeklyForecast();
   });
 
@@ -89,7 +115,7 @@ function initDropdown() {
     units = 'metric';
     unitSelect.innerHTML = '°C';
     dropDown.style.display = 'none';
-    updateInfo(city, units);
+    updateInfo();
     processWeeklyForecast();
   });
 
@@ -122,62 +148,26 @@ function setWeatherTheme(data) {
   }
 }
 
-function convertWindDirection(data) {
-  if ((data >= '350' && data <= '360') || (data >= '0' && data <= '10')) {
-    return 'N &#8593;';
-  } else if (data > '10' && data <= '30') {
-    return 'N/NE &#8599; ';
-  } else if (data > '30' && data <= '60') {
-    return ' NE &#8599;';
-  } else if (data > '60' && data <= '80') {
-    return 'E/NE &#8599; ';
-  } else if (data > '80' && data <= '110') {
-    return 'E &#8594; ';
-  } else if (data > '110' && data <= '130') {
-    return ' E/SE &#8600;';
-  } else if (data > '130' && data <= '150') {
-    return 'SE &#8600; ';
-  } else if (data > '150' && data <= '170') {
-    return 'S/SE &#8600; ';
-  } else if (data > '170' && data <= '200') {
-    return 'S &#8595;';
-  } else if (data > '200' && data <= '220') {
-    return 'S/SW &#8601; ';
-  } else if (data > '220' && data <= '240') {
-    return 'SW &#8601; ';
-  } else if (data > '240' && data <= '260') {
-    return 'W/SW &#8601;';
-  } else if (data > '260' && data <= '290') {
-    return 'W &#8592;';
-  } else if (data > '290' && data <= '310') {
-    return 'W/NW &#8598;';
-  } else if (data > '310' && data <= '330') {
-    return ' NW &#8598;';
-  } else if (data > '330' && data <= '350') {
-    return ' N/NW &#8598;';
-  }
-}
-
 function initSearchListener() {
   const searchField = document.getElementById('city-input');
   searchField.addEventListener('keydown', (event) => {
     if (event.key === 'Enter') {
-      city = searchField.value;
-      updateInfo(city, units);
+      parseString(searchField.value);
+      updateInfo();
       processWeeklyForecast();
     }
   });
 
   const searchIcon = document.getElementById('search-icon');
   searchIcon.addEventListener('click', () => {
-    city = searchField.value;
-    updateInfo(city, units);
+    parseString(searchField.value);
+    updateInfo();
     processWeeklyForecast();
   });
 }
 
 function init() {
-  updateInfo(city, units);
+  updateInfo();
   initSearchListener();
   initDropdown();
   processWeeklyForecast();
@@ -194,60 +184,48 @@ function displayError() {
   }
 }
 
-
 async function processWeeklyForecast() {
-    try{ 
-    let weekly = await getWeeklyForecast(city, units);
-    let days = weekly.list.filter(day => {
-        return day.dt_txt.includes('12:00:00');
+  try {
+    let weekly = await getWeeklyForecast();
+    let days = weekly.list.filter((day) => {
+      return day.dt_txt.includes('18:00:00');
     });
-    updateWeeklyForecast(days)}
-    catch {
-        displayError();
-    }
+    updateWeeklyForecast(days);
+  } catch {
+    displayError();
+  }
 }
 
-function updateWeeklyForecast(days){
-    const forecastPanel = document.getElementById('weekly-forecast');
-    while(forecastPanel.firstChild) {
-        forecastPanel.removeChild(forecastPanel.firstChild);
-    }
-    days.forEach(day => {
-        const div = document.createElement('div');
-        div.classList.add('weekly-forecast-item');
-        forecastPanel.appendChild(div);
-        const dtInfo = day.dt_txt.split(' ');
+function updateWeeklyForecast(days) {
+  const forecastPanel = document.getElementById('weekly-forecast');
+  while (forecastPanel.firstChild) {
+    forecastPanel.removeChild(forecastPanel.firstChild);
+  }
+  days.forEach((day) => {
+    const div = document.createElement('div');
+    div.classList.add('weekly-forecast-item');
+    forecastPanel.appendChild(div);
+    const dtInfo = day.dt_txt.split(' ');
 
-        const date = document.createElement('div');
-        date.classList.add('forecast-item-date');
-        date.innerHTML = convertDate(dtInfo[0], "date");
-        div.appendChild(date);
+    const date = document.createElement('div');
+    date.classList.add('forecast-item-date');
+    date.innerHTML = convertDate(dtInfo[0], 'date');
+    div.appendChild(date);
 
-        const days = document.createElement('div');
-        days.classList.add('forecast-item-day');
-        days.innerHTML = convertDate(dtInfo[0], "days");
-        div.appendChild(days);
-        
-        const icon = document.createElement('div');
-        icon.classList.add('forecast-item-icon');
-        icon.classList.add('fa-solid');
-        icon.classList.add(weatherIcon[day.weather[0].main])
-        div.appendChild(icon);
+    const days = document.createElement('div');
+    days.classList.add('forecast-item-day');
+    days.innerHTML = convertDate(dtInfo[0], 'days');
+    div.appendChild(days);
 
-        const temperature = document.createElement('div');
-        temperature.classList.add('forecast-item-temperature');
-        temperature.innerHTML = addTempUnits(Math.round(day.main.temp), units)
-        div.appendChild(temperature);
+    const icon = document.createElement('div');
+    icon.classList.add('forecast-item-icon');
+    icon.classList.add('fa-solid');
+    icon.classList.add(weatherIcon[day.weather[0].main]);
+    div.appendChild(icon);
 
-    })
-}
-
-const weatherIcon ={
-    "Thunderstorm": "fa-cloud-bolt",
-    "Drizzle": "fa-cloud-rain",
-    "Rain": "fa-cloud-showers-heavy",
-    "Snow": "fa-snow-flake",
-    "Clouds": "fa-cloud",
-    "Haze": "fa-smog",
-    "Clear": "fa-sun",
+    const temperature = document.createElement('div');
+    temperature.classList.add('forecast-item-temperature');
+    temperature.innerHTML = addTempUnits(Math.round(day.main.temp), units);
+    div.appendChild(temperature);
+  });
 }
